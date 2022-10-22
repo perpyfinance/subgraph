@@ -1,0 +1,38 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Factory
+    network: avalanche
+    source:
+      address: "0x60Db716feFF3323D36f88b6c288723BC1Cc078C2"
+      abi: Factory
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - AddTokensAndPriceFeeds
+        - OwnershipTransferred
+        - SetAccessManager
+        - SetFeesManager
+        - SetHarvester
+        - VaultCreated
+      abis:
+        - name: Factory
+          file: ./abis/Factory.json
+      eventHandlers:
+        - event: AddTokensAndPriceFeeds(address[],address[])
+          handler: handleAddTokensAndPriceFeeds
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: SetAccessManager(address)
+          handler: handleSetAccessManager
+        - event: SetFeesManager(address)
+          handler: handleSetFeesManager
+        - event: SetHarvester(address)
+          handler: handleSetHarvester
+        - event: VaultCreated(address,address,address[])
+          handler: handleVaultCreated
+      file: ./src/mapping.ts
