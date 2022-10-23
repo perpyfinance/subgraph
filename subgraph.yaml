@@ -1,38 +1,87 @@
-specVersion: 0.0.1
+specVersion: 0.0.2
 schema:
-  file: ./schema.graphql
+    file: ./schema.graphql
 dataSources:
-  - kind: ethereum
-    name: Factory
-    network: avalanche
-    source:
-      address: "0x60Db716feFF3323D36f88b6c288723BC1Cc078C2"
-      abi: Factory
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - AddTokensAndPriceFeeds
-        - OwnershipTransferred
-        - SetAccessManager
-        - SetFeesManager
-        - SetHarvester
-        - VaultCreated
-      abis:
-        - name: Factory
-          file: ./abis/Factory.json
-      eventHandlers:
-        - event: AddTokensAndPriceFeeds(address[],address[])
-          handler: handleAddTokensAndPriceFeeds
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: SetAccessManager(address)
-          handler: handleSetAccessManager
-        - event: SetFeesManager(address)
-          handler: handleSetFeesManager
-        - event: SetHarvester(address)
-          handler: handleSetHarvester
-        - event: VaultCreated(address,address,address[])
-          handler: handleVaultCreated
-      file: ./src/mapping.ts
+    - kind: ethereum
+      name: Factory
+      network: avalanche
+      source:
+          address: "0x60Db716feFF3323D36f88b6c288723BC1Cc078C2"
+          abi: Factory
+          startBlock: 21218000 # TODO : OK
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - TradingVault
+          abis:
+              - name: Factory
+                file: ./abis/Factory.json
+              - name: TradingVault
+                file: ./abis/TradingVault.json
+          eventHandlers:
+              - event: AddTokensAndPriceFeeds(address[],address[])
+                handler: handleAddTokensAndPriceFeeds
+              - event: OwnershipTransferred(indexed address,indexed address)
+                handler: handleOwnershipTransferred
+              - event: SetAccessManager(address)
+                handler: handleSetAccessManager
+              - event: SetFeesManager(address)
+                handler: handleSetFeesManager
+              - event: SetHarvester(address)
+                handler: handleSetHarvester
+              - event: VaultCreated(address,address,address[])
+                handler: handleVaultCreated
+          file: ./src/mappings/factory.ts
+          blockHandlers:
+              - handler: handleNewBlock
+templates:
+    - kind: ethereum/contract
+      name: TradingVault
+      network: avalanche
+      source:
+          abi: TradingVault
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          file: ./src/mappings/tradingVault.ts
+          entities:
+              - TradingVault
+          abis:
+              - name: TradingVault
+                file: ./abis/TradingVault.json
+              - name: Factory
+                file: ./abis/Factory.json
+          eventHandlers:
+              - event: Deposit(uint256,uint256)
+                handler: handleDeposit
+              - event: Rebalance(uint256[],uint256[])
+                handler: handleRebalance
+              - event: Redeem(uint256,uint256)
+                handler: handleRedeem
+              - event: HarvestManagementFees(uint256,uint256)
+                handler: handleHarvestManagementFees
+              - event: HarvestPerformanceFees(uint256,uint256)
+                handler: handleHarvestPerformanceFees
+              - event: AddAsset(address)
+                handler: handleAddAsset
+              - event: SetShareTransferability(bool)
+                handler: handleSetShareTransferability
+              - event: SetSecurityProps((uint256,uint256,uint256,uint256,uint256,uint256,uint256))
+                handler: handleSetSecurityProps
+              - event: SetConfigProps((bool,uint8,string,string))
+                handler: handleSetConfigProps
+              - event: SetFeesProps((address,uint256,uint256,uint256,uint256,uint256))
+                handler: handleSetFeesProps
+              - event: RedeemExecuted(address,uint256,uint256)
+                handler: handleRedeemExecuted
+              - event: RedeemExecuteFail(address,uint256,uint256)
+                handler: handleRedeemExecuteFail
+              - event: RedeemAsk(address,uint256,uint256)
+                handler: handleRedeemAsk
+              - event: PositionDecrease(address[],address,uint256,uint256,bool,uint256)
+                handler: handlePositionDecrease
+              - event: PositionIncrease(address[],address,uint256,uint256,uint256,bool,uint256)
+                handler: handlePositionIncrease

@@ -1,6 +1,149 @@
-type ExampleEntity @entity {
-  id: ID!
-  count: BigInt!
-  tokens: [Bytes]! # address[]
-  priceFeeds: [Bytes]! # address[]
+type Factory @entity {
+	id: ID!
+	vaultCount: Int!
+	vaults: [TradingVault!]! @derivedFrom(field: "factory")
+
+	# OLD
+	# tokens: [Bytes!]!
+	# feesManager: Bytes!
+	# accessManager: Bytes!
+	# harvester: Bytes!
+	# swapRouter: Bytes!
+	# swapProxy: Bytes!
+	# swapAdapter: Bytes!
+
+	# Snapshots
+	lastSnapshotBlockTimestamp: BigInt!
+	lastSnapshotBlockNumber: BigInt!
+}
+
+type TradingVault @entity {
+	id: ID!
+	factory: Factory!
+	vault: Bytes! # address
+	creator: Bytes! # address
+	# accManagementFeesToDAO: BigInt!
+	# accPerformanceFeesToDAO: BigInt!
+	# accManagementFeesToStrategists: BigInt!
+	# accPerformanceFeesToStrategists: BigInt!
+
+	deposits: [Deposit!]! @derivedFrom(field: "vault")
+	redemptions: [Redeem!]! @derivedFrom(field: "vault")
+	deposits: [IncreasePosition!]! @derivedFrom(field: "vault")
+	redemptions: [DecreasePosition!]! @derivedFrom(field: "vault")
+
+	depositsCount: Int!
+	redemptionsCount: Int!
+	increasePositionCount: Int!
+	decreasePositionCount: Int!
+
+	# OLD
+	# managementFeesHarvests: [HarvestManagementFees!]! @derivedFrom(field: "vault")
+	# performanceFeesHarvests: [HarvestPerformanceFees!]! @derivedFrom(field: "vault")
+
+	snapshots: [VaultSnapshot!]! @derivedFrom(field: "vault")
+
+	# RoLes
+	# admins: [Bytes!]! # address[]
+	# strategists: [Bytes!]! # address[]
+	# harvesters: [Bytes!]! # address[]
+	# # Token Struct State
+	# tokens: [Bytes!]!
+	# tokensPriceFeedAddress: [Bytes!]!
+	# tokensPriceFeedPrecision: [BigInt!]!
+	# tokensDenominator: [BigInt!]!
+	# # Constant Props Struct State
+	# factoryAddress: Bytes!
+	# createdAt: BigInt!
+	# share: Bytes!
+	# # Config Props Struct State
+	# paused: Boolean!
+	# verified: Int!
+	# name: String!
+	# description: String!
+	# # Security Props Struct State
+	# maxAUM: BigInt!
+	# maxLossSwap: BigInt!
+	# minAmountDeposit: BigInt!
+	# maxAmountDeposit: BigInt!
+	# minFrequencySwap: BigInt!
+	# minSecurityTime: BigInt!
+	# minHarvestThreshold: BigInt!
+	# # Fees Props Struct State
+	# beneficiary: Bytes!
+	# exitFees: BigInt
+	# managementFeesRate: BigInt
+	# managementFeesToStrategist: BigInt
+	# performanceFeesRate: BigInt
+	# performanceFeesToStrategist: BigInt
+	# # History Props Struct State
+	# highWaterMark: BigInt!
+	# prevRebalanceSignals: [BigInt!]!
+	# prevSwap: BigInt!
+	# prevMngHarvest: BigInt!
+
+	# balances: [BigInt!]!
+	# positions: [BigInt!]!
+	# tvl: BigInt!
+	# sharePrice: BigInt!
+	# # Fees - In shares
+	# ongoingPerformanceFees: BigInt!
+	# ongoingManagementFees: BigInt!
+
+	# shareTransferability: Boolean!
+}
+
+type VaultSnapshot @entity {
+	id: ID!
+	factory: Factory!
+	vault: TradingVault!
+	timestamp: BigInt!
+	triggeredByEvent: Boolean!
+	# ToDo : COMPLETE HERE
+	TVL: BigInt!
+}
+
+type Deposit @entity {
+	id: ID!
+	vault: TradingVault!
+	from: Bytes!
+	baseTokenAmountIn: BigInt!
+	sharesMinted: BigInt!
+	timestamp: BigInt!
+}
+
+type Redeem @entity {
+	id: ID!
+	vault: TradingVault!
+	from: Bytes!
+	shareBurned: BigInt!
+	amountReceived: BigInt!
+	timestamp: BigInt!
+}
+
+type IncreasePosition @entity {
+	id: ID!
+	vault: TradingVault!
+	from: Bytes!
+	path: [Bytes!]!
+	tradedToken: Bytes!
+	amountIn: BigInt!
+	minOut: BigInt!
+	sizeDelta: BigInt!
+	isLong: Boolean!
+	acceptablePrice: BigInt!
+	timestamp: BigInt!
+}
+
+type DecreasePosition @entity {
+	id: ID!
+	vault: TradingVault!
+	from: Bytes!
+	path: [Bytes!]!
+	tradedToken: Bytes!
+	collateralDelta: BigInt!
+	sizeDelta: BigInt!
+	isLong: Boolean!
+	acceptablePrice: BigInt!
+	timestamp: BigInt!
 }
