@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 0.0.4
 schema:
     file: ./schema.graphql
 dataSources:
@@ -11,7 +11,7 @@ dataSources:
           startBlock: 21218000 # TODO : OK
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.6
           language: wasm/assemblyscript
           entities:
               - TradingVault
@@ -21,18 +21,18 @@ dataSources:
               - name: TradingVault
                 file: ./abis/TradingVault.json
           eventHandlers:
-              - event: AddTokensAndPriceFeeds(address[],address[])
-                handler: handleAddTokensAndPriceFeeds
-              - event: OwnershipTransferred(indexed address,indexed address)
-                handler: handleOwnershipTransferred
-              - event: SetAccessManager(address)
-                handler: handleSetAccessManager
-              - event: SetFeesManager(address)
-                handler: handleSetFeesManager
-              - event: SetHarvester(address)
-                handler: handleSetHarvester
               - event: VaultCreated(address,address,address[])
                 handler: handleVaultCreated
+              # - event: AddTokensAndPriceFeeds(address[],address[])
+              #   handler: handleAddTokensAndPriceFeeds
+              # - event: OwnershipTransferred(indexed address,indexed address)
+              #   handler: handleOwnershipTransferred
+              # - event: SetAccessManager(address)
+              #   handler: handleSetAccessManager
+              # - event: SetFeesManager(address)
+              #   handler: handleSetFeesManager
+              # - event: SetHarvester(address)
+              #   handler: handleSetHarvester
           file: ./src/mappings/factory.ts
           blockHandlers:
               - handler: handleNewBlock

@@ -155,22 +155,22 @@ export class TradingVault extends Entity {
     this.set("redemptions", Value.fromStringArray(value));
   }
 
-  get deposits(): Array<string> {
-    let value = this.get("deposits");
+  get posIncreases(): Array<string> {
+    let value = this.get("posIncreases");
     return value!.toStringArray();
   }
 
-  set deposits(value: Array<string>) {
-    this.set("deposits", Value.fromStringArray(value));
+  set posIncreases(value: Array<string>) {
+    this.set("posIncreases", Value.fromStringArray(value));
   }
 
-  get redemptions(): Array<string> {
-    let value = this.get("redemptions");
+  get posDecreases(): Array<string> {
+    let value = this.get("posDecreases");
     return value!.toStringArray();
   }
 
-  set redemptions(value: Array<string>) {
-    this.set("redemptions", Value.fromStringArray(value));
+  set posDecreases(value: Array<string>) {
+    this.set("posDecreases", Value.fromStringArray(value));
   }
 
   get depositsCount(): i32 {
@@ -286,6 +286,15 @@ export class VaultSnapshot extends Entity {
     this.set("triggeredByEvent", Value.fromBoolean(value));
   }
 
+  get sharePrice(): BigInt {
+    let value = this.get("sharePrice");
+    return value!.toBigInt();
+  }
+
+  set sharePrice(value: BigInt) {
+    this.set("sharePrice", Value.fromBigInt(value));
+  }
+
   get TVL(): BigInt {
     let value = this.get("TVL");
     return value!.toBigInt();
@@ -293,6 +302,150 @@ export class VaultSnapshot extends Entity {
 
   set TVL(value: BigInt) {
     this.set("TVL", Value.fromBigInt(value));
+  }
+
+  get bT_size(): BigInt {
+    let value = this.get("bT_size");
+    return value!.toBigInt();
+  }
+
+  set bT_size(value: BigInt) {
+    this.set("bT_size", Value.fromBigInt(value));
+  }
+
+  get bT_collateral(): BigInt {
+    let value = this.get("bT_collateral");
+    return value!.toBigInt();
+  }
+
+  set bT_collateral(value: BigInt) {
+    this.set("bT_collateral", Value.fromBigInt(value));
+  }
+
+  get bT_averagePrice(): BigInt {
+    let value = this.get("bT_averagePrice");
+    return value!.toBigInt();
+  }
+
+  set bT_averagePrice(value: BigInt) {
+    this.set("bT_averagePrice", Value.fromBigInt(value));
+  }
+
+  get bT_entryFundingRate(): BigInt {
+    let value = this.get("bT_entryFundingRate");
+    return value!.toBigInt();
+  }
+
+  set bT_entryFundingRate(value: BigInt) {
+    this.set("bT_entryFundingRate", Value.fromBigInt(value));
+  }
+
+  get bT_reserveAmount(): BigInt {
+    let value = this.get("bT_reserveAmount");
+    return value!.toBigInt();
+  }
+
+  set bT_reserveAmount(value: BigInt) {
+    this.set("bT_reserveAmount", Value.fromBigInt(value));
+  }
+
+  get bT_realisedPnl(): BigInt {
+    let value = this.get("bT_realisedPnl");
+    return value!.toBigInt();
+  }
+
+  set bT_realisedPnl(value: BigInt) {
+    this.set("bT_realisedPnl", Value.fromBigInt(value));
+  }
+
+  get bT_hasProfit(): boolean {
+    let value = this.get("bT_hasProfit");
+    return value!.toBoolean();
+  }
+
+  set bT_hasProfit(value: boolean) {
+    this.set("bT_hasProfit", Value.fromBoolean(value));
+  }
+
+  get bT_lastIncreasedTime(): BigInt {
+    let value = this.get("bT_lastIncreasedTime");
+    return value!.toBigInt();
+  }
+
+  set bT_lastIncreasedTime(value: BigInt) {
+    this.set("bT_lastIncreasedTime", Value.fromBigInt(value));
+  }
+
+  get tT_size(): BigInt {
+    let value = this.get("tT_size");
+    return value!.toBigInt();
+  }
+
+  set tT_size(value: BigInt) {
+    this.set("tT_size", Value.fromBigInt(value));
+  }
+
+  get tT_collateral(): BigInt {
+    let value = this.get("tT_collateral");
+    return value!.toBigInt();
+  }
+
+  set tT_collateral(value: BigInt) {
+    this.set("tT_collateral", Value.fromBigInt(value));
+  }
+
+  get tT_averagePrice(): BigInt {
+    let value = this.get("tT_averagePrice");
+    return value!.toBigInt();
+  }
+
+  set tT_averagePrice(value: BigInt) {
+    this.set("tT_averagePrice", Value.fromBigInt(value));
+  }
+
+  get tT_entryFundingRate(): BigInt {
+    let value = this.get("tT_entryFundingRate");
+    return value!.toBigInt();
+  }
+
+  set tT_entryFundingRate(value: BigInt) {
+    this.set("tT_entryFundingRate", Value.fromBigInt(value));
+  }
+
+  get tT_reserveAmount(): BigInt {
+    let value = this.get("tT_reserveAmount");
+    return value!.toBigInt();
+  }
+
+  set tT_reserveAmount(value: BigInt) {
+    this.set("tT_reserveAmount", Value.fromBigInt(value));
+  }
+
+  get tT_realisedPnl(): BigInt {
+    let value = this.get("tT_realisedPnl");
+    return value!.toBigInt();
+  }
+
+  set tT_realisedPnl(value: BigInt) {
+    this.set("tT_realisedPnl", Value.fromBigInt(value));
+  }
+
+  get tT_hasProfit(): boolean {
+    let value = this.get("tT_hasProfit");
+    return value!.toBoolean();
+  }
+
+  set tT_hasProfit(value: boolean) {
+    this.set("tT_hasProfit", Value.fromBoolean(value));
+  }
+
+  get tT_lastIncreasedTime(): BigInt {
+    let value = this.get("tT_lastIncreasedTime");
+    return value!.toBigInt();
+  }
+
+  set tT_lastIncreasedTime(value: BigInt) {
+    this.set("tT_lastIncreasedTime", Value.fromBigInt(value));
   }
 }
 

@@ -1,14 +1,12 @@
-import { ethereum, Bytes, log } from "@graphprotocol/graph-ts";
-import { BigInt, Address } from "@graphprotocol/graph-ts";
-
+import { ethereum, log } from "@graphprotocol/graph-ts";
+import { Address } from "@graphprotocol/graph-ts";
 import { VaultCreated } from "../types/Factory/Factory";
-
 import { TradingVault, Factory } from '../types/schema';
 import { TradingVault as VaultContract } from "../types/Factory/TradingVault";
 import { Factory as FactoryContract } from "../types/Factory/Factory";
 import { TradingVault as VaultTemplate } from "../types/templates";
-import * as hp /* { FACTORY_ADDRESS, ZERO_BI, SNAPSHOT_TIMEFRAME_15_MIN } */ from './helper';
 import { VaultSnapshot } from "../types/schema";
+import * as hp from './helper';
 
 
 /**
@@ -20,7 +18,7 @@ export function _createFactory(event: VaultCreated): Factory {
     log.debug("CALL : _createFactory", []);
     const factory = new Factory(hp.FACTORY_ADDRESS);
     factory.vaultCount = 0;
-    const bindedFactory = FactoryContract.bind(Address.fromString(hp.FACTORY_ADDRESS));
+    // const bindedFactory = FactoryContract.bind(Address.fromString(hp.FACTORY_ADDRESS));
     factory.lastSnapshotBlockTimestamp = event.block.timestamp;
     factory.lastSnapshotBlockNumber = event.block.number;
     factory.save();
@@ -58,8 +56,9 @@ export function _createVault(event: VaultCreated, factory: Factory): TradingVaul
     vault.increasePositionCount = 0;
     vault.decreasePositionCount = 0;
     vault.redemptionsCount = 0;
-    const updatedVault = updateVault(vault);
-    updatedVault.save();
+    // const updatedVault = updateVault(vault);
+    // updatedVault.save();
+    vault.save();
     return vault;
 }
 
@@ -67,7 +66,7 @@ export function _createVault(event: VaultCreated, factory: Factory): TradingVaul
  * Create a vault, via the factory event
  * @param event /
  */
-export function handleCreateVault(event: VaultCreated): void {
+export function handleVaultCreated(event: VaultCreated): void {
     log.debug("CALL : handleCreateVault", []);
     // Factory (created when the first vault is created)
     let factory = Factory.load(hp.FACTORY_ADDRESS);
@@ -86,7 +85,7 @@ export function handleCreateVault(event: VaultCreated): void {
  * @param factory Factory instance
  * @param vaultAddress Vault address
  * @param block Block of the event
- * @param triggeredByEvent Wethever the snapshot is triggered by an event or the `handbleBlock` handler. To be used in the frontend possibly
+ * @param triggeredByEvent Wether or not the snapshot is triggered by an event or the `handbleBlock` handler. To be used in the frontend possibly
  */
 export function newSnapshot(
     factory: Factory,
@@ -96,20 +95,40 @@ export function newSnapshot(
 ): void {
     const vault = VaultContract.bind(vaultAddress);
     const entityName = hp.FACTORY_ADDRESS + "-" + vaultAddress.toHexString() + "-" + block.number.toString();
-    const status = vault.getVaultStatus();
-    // const tokensLength = vault.tokensLength().toI32();
-    // const assetsPrices = new Array<BigInt>(tokensLength);
-    // const newTokens = new Array<Bytes>(tokensLength);
-    // for (let y = 0; y < tokensLength; y++) {
-    //     const asset = vault.tokens(BigInt.fromI32(y));
-    //     const price = vault.getLatestPrice(asset.value1);
-    //     assetsPrices[y] = price;
-    //     newTokens[y] = asset.value0;
-    // }
+    // const status = vault.getVaultStatus();
+    // const baseToken = vault.baseToken();
+    // const tradedToken = vault.tradedToken();
+
     const snapshot = new VaultSnapshot(entityName);
     snapshot.factory = factory.id;
     snapshot.vault = vaultAddress.toHexString();
-    // ToDo
+    const vStatus = vault.getVaultStatus();
+
+    const positions = vault.getAllPositions();
+    const bTPosition = positions[0];
+    const tTPosition = positions[1];
+
+    snapshot.TVL = vStatus.value0;
+    snapshot.sharePrice = vStatus.value1;
+
+    snapshot.bT_size = bTPosition.size;
+    snapshot.bT_collateral = bTPosition.collateral;
+    snapshot.bT_averagePrice = bTPosition.averagePrice;
+    snapshot.bT_entryFundingRate = bTPosition.entryFundingRate;
+    snapshot.bT_reserveAmount = bTPosition.reserveAmount;
+    snapshot.bT_realisedPnl = bTPosition.realisedPnl;
+    snapshot.bT_hasProfit = bTPosition.hasProfit;
+    snapshot.bT_lastIncreasedTime = bTPosition.lastIncreasedTime;
+
+    snapshot.tT_size = tTPosition.size;
+    snapshot.tT_collateral = tTPosition.collateral;
+    snapshot.tT_averagePrice = tTPosition.averagePrice;
+    snapshot.tT_entryFundingRate = tTPosition.entryFundingRate;
+    snapshot.tT_reserveAmount = tTPosition.reserveAmount;
+    snapshot.tT_realisedPnl = tTPosition.realisedPnl;
+    snapshot.tT_hasProfit = tTPosition.hasProfit;
+    snapshot.tT_lastIncreasedTime = tTPosition.lastIncreasedTime;
+
     snapshot.timestamp = block.timestamp;
     snapshot.triggeredByEvent = triggeredByEvent;
     snapshot.save();
@@ -137,7 +156,7 @@ export function handleNewBlock(block: ethereum.Block): void {
         newSnapshot(factory, vAddress, block, false);
         let vault = TradingVault.load(vAddress.toString());
         if (vault === null) continue;
-        updateVault(vault);
+        // updateVault(vault); // Nothing to update for now
     }
     factory.lastSnapshotBlockTimestamp = block.timestamp;
     factory.lastSnapshotBlockNumber = block.number;

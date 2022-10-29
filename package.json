@@ -4,10 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ henribrg/stealth-dapp-graph2",
-    "create-local": "graph create --node http://localhost:8020/ henribrg/stealth-dapp-graph2",
-    "remove-local": "graph remove --node http://localhost:8020/ henribrg/stealth-dapp-graph2",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 henribrg/stealth-dapp-graph2"
+    "deploy": "graph deploy --product hosted-service henribrg/stealth-dapp-graph --node https://api.thegraph.com/deploy/"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.2",
